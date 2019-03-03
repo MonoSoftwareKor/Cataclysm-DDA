@@ -1981,7 +1981,7 @@ bool cata_tiles::draw_sprite_at(const tile_type &tile, const weighted_int_list<s
 
     //use night vision colors when in use
     //then use low light tile if available
-    /*if (apply_night_vision_goggles) {
+    if (apply_night_vision_goggles) {
         if (ll != LL_LOW) {
             if (const auto ptr = tileset_ptr->get_overexposed_tile(spritelist[sprite_num])) {
                 sprite_tex = ptr;
@@ -1993,7 +1993,7 @@ bool cata_tiles::draw_sprite_at(const tile_type &tile, const weighted_int_list<s
             }
         }
     }
-    else if (ll == LL_LOW) {
+    /*else if (ll == LL_LOW) {
         if (const auto ptr = tileset_ptr->get_shadow_tile(spritelist[sprite_num])) {
             sprite_tex = ptr;
         }
@@ -2480,9 +2480,15 @@ bool cata_tiles::draw_filter(const tripoint &p, lit_level ll, int &height_3d) {
             suffix = "3";
         }
         else {
+            //if (!nv_goggles_activated) {
             return false;
+            //}
         }
+
         //add_msg(m_debug, _("%d,%d : %d // %s"), p.x, p.y, (int)ll, suffix);
+        /*if (p.z < 0) {
+            tile = *tileset_ptr->find_tile_type("shadow_filter" + suffix);
+        }*/
         if (calendar::turn.is_night()) {
             tile = *tileset_ptr->find_tile_type("night_filter" + suffix);
         }

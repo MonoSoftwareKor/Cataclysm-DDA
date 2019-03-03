@@ -56,15 +56,15 @@ static double occupied_tile_fraction( m_size target_size )
 {
     switch( target_size ) {
         case MS_TINY:
-            return 0.1;
+            return 0.2;
         case MS_SMALL:
-            return 0.25;
-        case MS_MEDIUM:
             return 0.5;
-        case MS_LARGE:
-            return 0.75;
-        case MS_HUGE:
+        case MS_MEDIUM:
             return 1.0;
+        case MS_LARGE:
+            return 1.5;
+        case MS_HUGE:
+            return 2.0;
     }
 
     return 0.5;
@@ -276,10 +276,10 @@ int player::fire_gun( const tripoint &target, int shots, item& gun )
     moves -= time_to_fire( *this, *gun.type );
 
     // Practice the base gun skill proportionally to number of hits, but always by one.
-    practice( skill_gun, ( hits + 1 ) * 5 );
+    practice( skill_gun, ( hits + 1 ) * 10 ); // origin *5
     // launchers train weapon skill for both hits and misses.
     int practice_units = gun.gun_skill() == skill_launcher ? curshot : hits;
-    practice( gun.gun_skill(), ( practice_units + 1 ) * 5 );
+    practice( gun.gun_skill(), ( practice_units + 1 ) * 15 ); // origin *5
 
     return curshot;
 }
@@ -1363,7 +1363,7 @@ int time_to_fire( const Character &p, const itype &firingt )
     };
 
     static std::map<skill_id, time_info_t> const map {
-        {skill_id {"pistol"},   {10, 80,  10}},
+        {skill_id {"pistol"},   {10, 40,  5}}, // origin 10/80/10
         {skill_id {"shotgun"},  {70, 150, 25}},
         {skill_id {"smg"},      {20, 80,  10}},
         {skill_id {"rifle"},    {30, 150, 15}},
