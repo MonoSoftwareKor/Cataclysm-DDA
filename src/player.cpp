@@ -2574,6 +2574,10 @@ bool player::in_climate_control()
     if( has_active_bionic( bio_climate ) ) {
         return true;
     }
+    else if( has_artifact_with(AEP_CLIMATE)){
+        return true;
+    }
+
     for( auto &w : worn ) {
         if( w.typeId() == "rm13_armor_on" ) {
             return true;

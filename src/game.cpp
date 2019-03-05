@@ -4084,8 +4084,9 @@ void game::debug()
             if( center != tripoint_min ) {
                 artifact_natural_property prop =
                     artifact_natural_property( rng( ARTPROP_NULL + 1, ARTPROP_MAX - 1 ) );
-                m.create_anomaly( center, prop );
-                m.spawn_natural_artifact( center, prop );
+                //m.create_anomaly( center, prop );
+                //m.spawn_natural_artifact( center, prop );
+                m.spawn_artifact(center);
             }
         }
         break;

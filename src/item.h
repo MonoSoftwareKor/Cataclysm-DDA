@@ -1263,6 +1263,10 @@ public:
          * Returns clothing layer for item which will always be 0 for non-wearable items.
          */
         int get_layer() const;
+
+        // ¿©±â
+        int get_bash_resist_mod() const;
+        int get_cut_resist_mod() const;
         /**
          * Returns the relative coverage that this item has when worn.
          * Values range from 0 (not covering anything, or no armor at all) to

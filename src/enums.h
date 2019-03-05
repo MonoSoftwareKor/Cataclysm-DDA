@@ -125,6 +125,7 @@ enum art_effect_passive : int {
     AEP_RESIST_ELECTRICITY, // Protection from electricity
     AEP_CARRY_MORE, // Increases carrying capacity by 200
     AEP_SAP_LIFE, // Killing non-zombie monsters may heal you
+    AEP_CLIMATE,
     // Splits good from bad
     AEP_SPLIT,
     // Bad
@@ -147,7 +148,7 @@ enum art_effect_passive : int {
     AEP_BAD_WEATHER, // More likely to experience bad weather
     AEP_SICK, // Decreases health over time
     AEP_CLAIRVOYANCE_PLUS, // See through walls to a larger distance; not bad effect, placement to preserve old saves.
-
+    
     NUM_AEPS
 };
 

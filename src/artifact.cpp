@@ -401,14 +401,18 @@ static const std::array<artifact_tool_form_datum, NUM_ARTTOOLFORMS> artifact_too
         {{ARTWEAP_SPEAR, NUM_ARTWEAPS, NUM_ARTWEAPS}}
     }
 } };
+
+// 아티팩트 무기 스탯
 static const std::array<artifact_weapon_datum, NUM_ARTWEAPS> artifact_weapon_data = { {
     // Adjective      Vol   Weight    Bashing Cutting Stabbing To-hit Flag
-    { translate_marker( "Heavy" ),   0_ml,   1400_gram, 10, 20,  0,  0,  0,  0, -2, 0, "" },
-    { translate_marker( "Knobbed" ), 250_ml,  250_gram, 14, 30,  0,  0,  0,  0, -1, 1, "" },
-    { translate_marker( "Spiked" ),  250_ml,  100_gram,  0,  0,  0,  0, 20, 40, -1, 1, "" },
-    { translate_marker( "Edged" ),   500_ml,  450_gram,  0,  0, 20, 50,  0,  0, -1, 2, "SHEATH_SWORD" },
-    { translate_marker( "Bladed" ),  250_ml, 2250_gram,  0,  0,  0,  0, 12, 30, -1, 1, "SHEATH_KNIFE" }
+    { translate_marker( "Heavy" ),   0_ml,   1400_gram, 10, 40,  0,  0,  0,  0, -2, 0, "" },
+    { translate_marker( "Knobbed" ), 250_ml,  250_gram, 14, 60,  0,  0,  0,  0, -1, 1, "" },
+    { translate_marker( "Spiked" ),  250_ml,  100_gram,  0,  0,  0,  0, 40, 80, -1, 1, "" },
+    { translate_marker( "Edged" ),   500_ml,  450_gram,  0,  0, 40, 100,  0,  0, -1, 2, "SHEATH_SWORD" },
+    { translate_marker( "Bladed" ),  250_ml, 2250_gram,  0,  0,  0,  0, 24, 60, -1, 1, "SHEATH_KNIFE" }
 } };
+
+// 아티팩트 방어구 스탯
 static const std::array<artifact_armor_form_datum, NUM_ARTARMFORMS> artifact_armor_form_data = { {
     // Name    color  Material         Vol Wgt Enc Cov Thk Env Wrm Sto Bsh Cut Hit
     {
@@ -590,6 +594,7 @@ void it_artifact_armor::create_name(const std::string &type)
     name_plural = name;
 }
 
+// 여기가 인공 아티팩트 생성
 std::string new_artifact()
 {
     if (one_in(2)) { // Generate a "tool" artifact
@@ -657,6 +662,7 @@ std::string new_artifact()
             value += passive_effect_cost[passive_tmp];
             def.artifact->effects_wielded.push_back(passive_tmp);
         }
+
         // Next, carried effects; more likely to be just bad
         num_good = 0;
         num_bad = 0;
@@ -731,6 +737,9 @@ std::string new_artifact()
         def.armor->env_resist = info.env_resist;
         def.armor->warmth = info.warmth;
         def.armor->storage = info.storage;
+        // 여기가 아티팩트 방어구의 성능 시점.
+        def.armor->cut_mod = rng(30,50);
+        def.armor->bash_mod = rng(30,50);
         std::ostringstream description;
         description << string_format(info.plural ?
                                      _("This is the %s.\nThey are the only ones of their kind.") :
@@ -810,6 +819,7 @@ std::string new_artifact()
             value += passive_effect_cost[passive_tmp];
             def.artifact->effects_worn.push_back(passive_tmp);
         }
+        def.artifact->effects_carried.push_back(AEP_SUPER_CLAIRVOYANCE);
         item_controller->add_item_type( static_cast<itype &>( def ) );
         return def.get_id();
     }
@@ -942,6 +952,8 @@ std::string architects_cube()
     // Add an extra weapon perhaps?
     def.description = _("The architect's cube.");
     def.artifact->effects_carried.push_back(AEP_SUPER_CLAIRVOYANCE);
+    def.artifact->effects_carried.push_back(AEP_CLIMATE);
+    
     item_controller->add_item_type( static_cast<itype &>( def ) );
     return def.get_id();
 }
@@ -1121,7 +1133,14 @@ void it_artifact_armor::deserialize(JsonObject &jo)
     armor->warmth = jo.get_int("warmth");
     armor->storage = jo.get_int("storage") * units::legacy_volume_factor;
     armor->power_armor = jo.get_bool("power_armor");
-
+    if (jo.has_int("bash mod")) {
+        armor->bash_mod = jo.get_int("bash mod");
+    }
+    if (jo.has_int("cut mod")) {
+        armor->cut_mod = jo.get_int("cut mod");
+    }
+    //json.member("bash mod", armor->bash_mod);
+    //json.member("cut mod", armor->cut_mod);
     JsonArray ja = jo.get_array("effects_worn");
     while (ja.has_more()) {
         artifact->effects_worn.push_back((art_effect_passive)ja.next_int());
@@ -1213,7 +1232,7 @@ void it_artifact_armor::serialize(JsonOut &json) const
     json.start_object();
 
     json.member("type", "artifact_armor");
-
+    
     // generic data
     json.member("id", id);
     json.member("name", name);
@@ -1248,7 +1267,8 @@ void it_artifact_armor::serialize(JsonOut &json) const
     json.member("warmth", armor->warmth);
     json.member("storage", armor->storage / units::legacy_volume_factor);
     json.member("power_armor", armor->power_armor);
-
+    json.member("bash mod", armor->bash_mod);
+    json.member("cut mod", armor->cut_mod);
     // artifact data
     serialize_enum_vector_as_int( json, "effects_worn", artifact->effects_worn );
 

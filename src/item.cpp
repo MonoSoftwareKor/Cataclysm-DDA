@@ -3065,6 +3065,24 @@ int item::get_thickness() const
     return static_cast<int>( static_cast<unsigned int>( t->thickness) );
 }
 
+int item::get_bash_resist_mod() const
+{
+    const auto t = find_armor_data();
+    if (t == nullptr) {
+        return 0;
+    }
+    return static_cast<int>(static_cast<unsigned int>(t->bash_mod));
+}
+
+int item::get_cut_resist_mod() const
+{
+    const auto t = find_armor_data();
+    if (t == nullptr) {
+        return 0;
+    }
+    return static_cast<int>(static_cast<unsigned int>(t->cut_mod));
+}
+
 int item::get_warmth() const
 {
     int fur_lined = 0;
@@ -3192,7 +3210,7 @@ int item::bash_resist( bool to_self ) const
         resist /= mat_types.size();
     }
 
-    return lround( ( resist * eff_thickness ) + padding );
+    return lround( ( resist * eff_thickness ) + padding) + get_bash_resist_mod();
 }
 
 int item::cut_resist( bool to_self ) const
@@ -3230,7 +3248,7 @@ int item::cut_resist( bool to_self ) const
         resist /= mat_types.size();
     }
 
-    return lround( ( resist * eff_thickness ) + padding );
+    return lround( ( resist * eff_thickness ) + padding ) + get_cut_resist_mod();
 }
 
 #ifdef _MSC_VER
