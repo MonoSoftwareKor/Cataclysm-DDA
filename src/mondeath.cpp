@@ -18,6 +18,8 @@
 #include "mtype.h"
 #include "field.h"
 #include "player.h"
+#include "vehicle.h"
+#include "vpart_position.h"
 
 #include <math.h>  // rounding
 #include <sstream>
@@ -162,8 +164,16 @@ void mdeath::acid( monster &z )
         } else {
             add_msg( m_warning, _( "The %s's body leaks acid." ), z.name().c_str() );
         }
-    }
+    }    
     g->m.add_field( z.pos(), fd_acid, 3 );
+
+    auto vp = g->m.veh_at(z.pos());
+
+    if (vp && &vp->vehicle()) {
+        auto vehicle = &vp->vehicle();
+        add_msg(m_bad, "%s was additional damaged by being hit by acidic objects!", vehicle->name.c_str());
+        vehicle->damage(vp->part_index(), 50, DT_ACID);
+    }
 }
 
 void mdeath::boomer( monster &z )
@@ -178,11 +188,29 @@ void mdeath::boomer( monster &z )
         }
     }
 
+    auto vp = g->m.veh_at(z.pos());     
+
+    if (vp && &vp->vehicle()) {
+        auto vehicle = &vp->vehicle();              
+        vehicle->damage(vp->part_index(), 25, DT_ACID);        
+        add_msg(m_bad, "%s was additional damaged in the explosion!", vehicle->name.c_str());
+    }
+    
     if( rl_dist( z.pos(), g->u.pos() ) == 1 ) {
         g->u.add_env_effect( effect_boomered, bp_eyes, 2, 24_turns );
     }
 
     g->m.propagate_field( z.pos(), fd_bile, 15, 1 );
+}
+
+void mdeath::fat(monster &z) {
+    auto vp = g->m.veh_at(z.pos());
+
+    if (vp && &vp->vehicle()) {
+        auto vehicle = &vp->vehicle();        
+        add_msg(m_bad, "%s was additional damaged by being hit by heavy objects!", vehicle->name.c_str());
+        vehicle->damage(vp->part_index(), 50, DT_BASH);
+    }
 }
 
 void mdeath::boomer_glow( monster &z )

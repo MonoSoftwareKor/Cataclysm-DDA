@@ -1230,10 +1230,10 @@ int iuse::mut_iv( player *p, item *it, bool, const tripoint & )
         if( !it->has_flag( iter.second.mutagen_flag ) ) {
             continue;
         }
-
+        
         const mutation_category_trait &m_category = iter.second;
         const std::string &mutation_category = m_category.category_full;
-
+        p->add_msg_if_player(m_debug, "use");
         // try to cross the threshold to be able to get post-threshold mutations this iv.
         test_crossing_threshold( *p, m_category );
 
@@ -1242,6 +1242,7 @@ int iuse::mut_iv( player *p, item *it, bool, const tripoint & )
         } else {
             p->add_msg_if_player( m_category.iv_message.c_str() );
         }
+
         // TODO: Remove the "is_player" part, implement NPC screams
         if( p->is_player() && !(p->has_trait( trait_NOPAIN )) && m_category.iv_sound ) {
             p->mod_pain(m_category.iv_pain);

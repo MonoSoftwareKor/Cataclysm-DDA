@@ -277,7 +277,7 @@ void mutation_branch::load( JsonObject &jsobj )
     jsarr = jsobj.get_array("category");
     while (jsarr.has_more()) {
         std::string s = jsarr.next_string();
-        new_mut.category.push_back(s);
+        new_mut.category.push_back(s);        
         mutations_category[s].push_back( trait_id( id ) );
     }
     jsarr = jsobj.get_array("wet_protection");

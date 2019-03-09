@@ -678,10 +678,14 @@ void player::mutate_category( const std::string &cat )
     // Pull the category's list for valid mutations
     std::vector<trait_id> valid;
     valid = mutations_category[cat];
+    add_msg_if_player(m_debug, cat.c_str());
+    add_msg_if_player(m_debug, std::to_string( valid.size()));
+    
 
     // Remove anything we already have, that we have a child of, or that
     // goes against our intention of a good/bad mutation
-    for (size_t i = 0; i < valid.size(); i++) {
+    for (size_t i = 0; i < valid.size(); i++) {        
+        add_msg_if_player(m_debug, valid[i].obj().name);
         if (!mutation_ok(valid[i], force_good, force_bad)) {
             valid.erase(valid.begin() + i);
             i--;

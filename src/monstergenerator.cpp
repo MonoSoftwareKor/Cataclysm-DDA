@@ -226,6 +226,7 @@ void MonsterGenerator::init_death()
     death_map["NORMAL"] = &mdeath::normal;// Drop a body
     death_map["ACID"] = &mdeath::acid;// Acid instead of a body
     death_map["BOOMER"] = &mdeath::boomer;// Explodes in vomit :3
+    death_map["FAT"] = &mdeath::fat;
     death_map["BOOMER_GLOW"] = &mdeath::boomer_glow;// Explodes in glowing vomit :3
     death_map["KILL_VINES"] = &mdeath::kill_vines;// Kill all nearby vines
     death_map["VINE_CUT"] = &mdeath::vine_cut;// Kill adjacent vine if it's cut
